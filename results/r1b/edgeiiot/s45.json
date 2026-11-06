@@ -1,0 +1,32 @@
+{
+ "n_target": {
+  "all": 2039,
+  "seen": 245,
+  "unseen": 1794
+ },
+ "all": {
+  "backdoor_success": 0.9764590485532123,
+  "clean_baseline": 0.0004904364884747426,
+  "excess": 0.9759686120647376
+ },
+ "seen": {
+  "backdoor_success": 0.8040816326530612,
+  "clean_baseline": 0.004081632653061225,
+  "excess": 0.7999999999999999
+ },
+ "unseen": {
+  "backdoor_success": 1.0,
+  "clean_baseline": 0.0,
+  "excess": 1.0
+ },
+ "wall_seconds": 30.421708558686078,
+ "dataset": "edgeiiot",
+ "mode": "keep",
+ "seed": 45,
+ "backdoor_target": "Backdoor",
+ "prep_version": 1,
+ "code_version": "f5a41d8ba673",
+ "torch": "2.14.1+cu130",
+ "device": "cuda",
+ "host": "ICT"
+}

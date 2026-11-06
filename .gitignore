@@ -1,0 +1,14 @@
+# environment
+.venv/
+__pycache__/
+*.pyc
+
+# datasets are not redistributed (see data/README.md)
+data/raw/
+data/cache/
+
+# run artefacts produced when you reproduce experiments
+logs/
+*.log
+stage4/export/
+stage4/docker-compose.gen.yml

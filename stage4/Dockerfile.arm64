@@ -1,0 +1,25 @@
+# arm64 (Raspberry Pi) image. Same app as the x86 Dockerfile, but torch comes from PyPI, whose
+# linux aarch64 wheels are CPU-only (the download.pytorch.org/whl/cpu index is x86_64). Cross-build
+# on the laptop with buildx + QEMU to prove Pi-readiness before the board arrives:
+#   docker buildx build --platform linux/arm64 -f stage4/Dockerfile.arm64 -t ztfl-stage4:arm64 stage4
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 PYTHONPATH=/app:/src
+
+COPY certs/ /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+ENV PIP_CERT=/etc/ssl/certs/ca-certificates.crt
+
+# The default aarch64 torch wheel on PyPI bundles NVIDIA CUDA libs (for ARM servers like GH200) --
+# ~2 GB and useless on a CPU-only Raspberry Pi. Pull the CPU build from the pytorch CPU index, and
+# the rest from PyPI. If the CPU index has no aarch64 wheel for a given torch version, pin one that
+# does on the board. Verify on the Pi: `python -c "import torch; print(torch.__version__)"`.
+RUN pip install --index-url https://download.pytorch.org/whl/cpu \
+      --extra-index-url https://pypi.org/simple \
+      torch==2.11.0 numpy "paho-mqtt<2" web3==7.16.0
+
+WORKDIR /app
+COPY common.py /app/common.py
+COPY gateway/app.py /app/gateway_app.py
+COPY device/app.py /app/device_app.py

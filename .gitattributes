@@ -1,0 +1,4 @@
+# Keep LF line endings on every platform: code_version hashes the bytes of src/*.py,
+# so identical line endings are needed for the hash to match the recorded results.
+* text=auto eol=lf
+*.json -diff

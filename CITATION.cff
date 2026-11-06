@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Zero-Trust Federated Intrusion Detection for IIoT: Poisoning as Privilege Escalation"
+type: software
+authors:
+  - family-names: Ibrahim
+    given-names: Hamza
+    orcid: "https://orcid.org/0009-0003-6388-9249"
+    affiliation: "Kumoh National Institute of Technology"
+repository-code: "https://github.com/hamzalabwork-sudo/ztfl-zero-trust-fl-iiot"
+license: MIT
+version: "1.0.0"
+date-released: "2026-11-06"
+keywords:
+  - industrial internet of things
+  - federated learning
+  - zero trust
+  - model poisoning
+  - backdoor attacks
+  - intrusion detection
+  - blockchain provenance
+  - sequential change detection

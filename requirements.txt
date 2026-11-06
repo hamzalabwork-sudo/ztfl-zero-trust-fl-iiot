@@ -1,0 +1,8 @@
+# Environment used for all simulation results (Python 3.10.12, Linux, NVIDIA RTX 3090).
+# CPU-only installs work; for CUDA, install the matching torch wheel from https://pytorch.org first.
+numpy==2.2.6
+pandas==2.3.3
+scipy==1.15.3
+scikit-learn==1.7.2
+torch==2.14.1
+matplotlib>=3.8          # plots and summaries only; does not affect any number

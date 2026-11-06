@@ -1,0 +1,5 @@
+# Optional: EVM provenance ledger (E6, --ledger evm) and the Stage-4 testbed tooling.
+# The testbed containers pin the same versions in stage4/Dockerfile.
+# The EVM node itself is anvil from Foundry (https://book.getfoundry.sh), e.g. v1.8.4.
+web3==7.16.0
+paho-mqtt<2

@@ -1,0 +1,32 @@
+{
+ "n_target": {
+  "all": 387,
+  "seen": 76,
+  "unseen": 311
+ },
+ "all": {
+  "backdoor_success": 1.0,
+  "clean_baseline": 0.025839793281653745,
+  "excess": 0.9741602067183462
+ },
+ "seen": {
+  "backdoor_success": 1.0,
+  "clean_baseline": 0.013157894736842105,
+  "excess": 0.9868421052631579
+ },
+ "unseen": {
+  "backdoor_success": 1.0,
+  "clean_baseline": 0.028938906752411574,
+  "excess": 0.9710610932475884
+ },
+ "wall_seconds": 91.55237760394812,
+ "dataset": "forge",
+ "mode": "nofp",
+ "seed": 43,
+ "backdoor_target": "malw_back",
+ "prep_version": 1,
+ "code_version": "f5a41d8ba673",
+ "torch": "2.14.1+cu130",
+ "device": "cuda",
+ "host": "ICT"
+}

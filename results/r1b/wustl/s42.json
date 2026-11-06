@@ -1,0 +1,32 @@
+{
+ "n_target": {
+  "all": 43,
+  "seen": 0,
+  "unseen": 43
+ },
+ "all": {
+  "backdoor_success": 1.0,
+  "clean_baseline": 0.27906976744186046,
+  "excess": 0.7209302325581395
+ },
+ "seen": {
+  "backdoor_success": NaN,
+  "clean_baseline": NaN,
+  "excess": NaN
+ },
+ "unseen": {
+  "backdoor_success": 1.0,
+  "clean_baseline": 0.27906976744186046,
+  "excess": 0.7209302325581395
+ },
+ "wall_seconds": 22.340761800762266,
+ "dataset": "wustl",
+ "mode": "nofp",
+ "seed": 42,
+ "backdoor_target": "Backdoor",
+ "prep_version": 1,
+ "code_version": "f5a41d8ba673",
+ "torch": "2.14.1+cu130",
+ "device": "cuda",
+ "host": "ICT"
+}

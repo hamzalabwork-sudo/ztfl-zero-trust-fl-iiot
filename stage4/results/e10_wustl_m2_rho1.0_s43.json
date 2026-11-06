@@ -1,0 +1,45 @@
+{
+ "run": "e10_wustl_m2_rho1.0_s43",
+ "n_dev": 10,
+ "t_ev": 500,
+ "policy": "cusum_sprt_mix",
+ "deployed_model": "330a273e2754772ee6bd95848e96b28a26cec1e392af625523cc6769780a062f",
+ "deployed_round": 30,
+ "dataset": "wustl",
+ "seed": 43,
+ "backdoor_target": "Backdoor",
+ "metrics": {
+  "wrongful_grant_rate": 0.0,
+  "benign_denial_rate": 0.0004999999999999449,
+  "false_isolation_rate": 0.0,
+  "detection_rate": 1.0,
+  "tti_median": 2.0,
+  "tti_p90": 2.0,
+  "premature_isolation_rate": 0.0,
+  "false_reauth_rate": 0.0,
+  "lateral_reach_mean": 0.0,
+  "granted_attacks_per_compromised": 0.0,
+  "n_compromised": 2,
+  "n_benign": 8,
+  "attack_events": 606
+ },
+ "ledger": {
+  "blocks": 51,
+  "rounds": 1,
+  "decision_batches": 50,
+  "head": "e3775ef6259a2ad07f0593183c51c6d5c50d27b39e7c2bd7bd30d93e89452f1f",
+  "verified": true,
+  "write_seconds": 0.0016393789555877447
+ },
+ "chain": {
+  "backend": "memory"
+ },
+ "events_total": 5000,
+ "score_ms_per_event": 0.20757628022693098,
+ "session_wall_seconds": 16.372941019013524,
+ "code_version": "f5a41d8ba673",
+ "gateway_cpus": "unlimited",
+ "torch_threads": 6,
+ "detector_code_version_matches": true,
+ "host": "9eb61b659a6c"
+}

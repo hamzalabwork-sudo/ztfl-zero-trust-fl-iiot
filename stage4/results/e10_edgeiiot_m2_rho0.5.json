@@ -1,0 +1,45 @@
+{
+ "run": "e10_edgeiiot_m2_rho0.5",
+ "n_dev": 10,
+ "t_ev": 500,
+ "policy": "cusum_sprt_mix",
+ "deployed_model": "3c987d3c005f8c189821f079ed78342eaee160666acec9e73f7453941894bb65",
+ "deployed_round": 30,
+ "dataset": "edgeiiot",
+ "seed": 42,
+ "backdoor_target": "Backdoor",
+ "metrics": {
+  "wrongful_grant_rate": 0.0,
+  "benign_denial_rate": 0.004250000000000087,
+  "false_isolation_rate": 0.0,
+  "detection_rate": 1.0,
+  "tti_median": 5.5,
+  "tti_p90": 7.5,
+  "premature_isolation_rate": 0.0,
+  "false_reauth_rate": 0.0,
+  "lateral_reach_mean": 0.0,
+  "granted_attacks_per_compromised": 0.0,
+  "n_compromised": 2,
+  "n_benign": 8,
+  "attack_events": 285
+ },
+ "ledger": {
+  "blocks": 51,
+  "rounds": 1,
+  "decision_batches": 50,
+  "head": "e33e9675b2e98d5ccc28895d1e2635a4fcf3ed57ea23d90ff5ffe11a62cb4085",
+  "verified": true,
+  "write_seconds": 0.0021531159291043878
+ },
+ "chain": {
+  "backend": "memory"
+ },
+ "events_total": 5000,
+ "score_ms_per_event": 0.2686759334523231,
+ "session_wall_seconds": 11.442632318940014,
+ "code_version": "31b0e7d91fce",
+ "gateway_cpus": "unlimited",
+ "torch_threads": 6,
+ "detector_code_version_matches": true,
+ "host": "3e22994a240a"
+}

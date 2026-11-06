@@ -1,0 +1,45 @@
+{
+ "run": "e10_forge_clean",
+ "n_dev": 10,
+ "t_ev": 500,
+ "policy": "cusum_sprt_mix",
+ "deployed_model": "c65e174a7faff9fc5633bd90aadd3a28b5cb506a1f1dc3e039d44023d25a8bd6",
+ "deployed_round": 30,
+ "dataset": "forge",
+ "seed": 42,
+ "backdoor_target": "malw_back",
+ "metrics": {
+  "wrongful_grant_rate": null,
+  "benign_denial_rate": 0.012399999999999856,
+  "false_isolation_rate": 0.0,
+  "detection_rate": null,
+  "tti_median": null,
+  "tti_p90": null,
+  "premature_isolation_rate": null,
+  "false_reauth_rate": null,
+  "lateral_reach_mean": null,
+  "granted_attacks_per_compromised": null,
+  "n_compromised": 0,
+  "n_benign": 10,
+  "attack_events": 0
+ },
+ "ledger": {
+  "blocks": 51,
+  "rounds": 1,
+  "decision_batches": 50,
+  "head": "5c4095c0a9a3ef86b3065172c78f858b4e9821766c8bc21b28a812c78f0a79f5",
+  "verified": true,
+  "write_seconds": 0.0019496828317642212
+ },
+ "chain": {
+  "backend": "memory"
+ },
+ "events_total": 5000,
+ "score_ms_per_event": 0.31574621149338783,
+ "session_wall_seconds": 11.62617290893104,
+ "code_version": "31b0e7d91fce",
+ "gateway_cpus": "unlimited",
+ "torch_threads": 6,
+ "detector_code_version_matches": true,
+ "host": "2a5c7f7a9d37"
+}
