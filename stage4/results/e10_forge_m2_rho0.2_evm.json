@@ -1,0 +1,429 @@
+{
+ "run": "e10_forge_m2_rho0.2_evm",
+ "n_dev": 10,
+ "t_ev": 500,
+ "policy": "cusum_sprt_mix",
+ "deployed_model": "c65e174a7faff9fc5633bd90aadd3a28b5cb506a1f1dc3e039d44023d25a8bd6",
+ "deployed_round": 30,
+ "dataset": "forge",
+ "seed": 42,
+ "backdoor_target": "malw_back",
+ "metrics": {
+  "wrongful_grant_rate": 0.0,
+  "benign_denial_rate": 0.011499999999999955,
+  "false_isolation_rate": 0.0,
+  "detection_rate": 1.0,
+  "tti_median": 35.0,
+  "tti_p90": 39.0,
+  "premature_isolation_rate": 0.0,
+  "false_reauth_rate": 0.0,
+  "lateral_reach_mean": 0.0,
+  "granted_attacks_per_compromised": 0.0,
+  "n_compromised": 2,
+  "n_benign": 8,
+  "attack_events": 122
+ },
+ "ledger": {
+  "blocks": 51,
+  "rounds": 1,
+  "decision_batches": 50,
+  "head": "5b5810abe7ccdcb5899223e745fa75cad969cc077850e6df9c8a77ab83cc1940",
+  "verified": true,
+  "write_seconds": 0.0015683674719184637
+ },
+ "chain": {
+  "contract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "deploy_gas": 630964,
+  "enqueue_seconds_total": 0.0018146729562431574,
+  "failed": 0,
+  "audit": {
+   "onchain_rounds": 1,
+   "onchain_decisions": 50,
+   "rounds_match": true,
+   "decisions_match": true,
+   "trusted_models": [
+    true
+   ]
+  },
+  "tx": [
+   {
+    "kind": "round",
+    "latency_s": 1.9954240299994126,
+    "gas": 139061,
+    "ok": true,
+    "block": 6
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.6312081570504233,
+    "gas": 30122,
+    "ok": true,
+    "block": 6
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.325601633056067,
+    "gas": 30122,
+    "ok": true,
+    "block": 6
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.0123291810741648,
+    "gas": 30110,
+    "ok": true,
+    "block": 6
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.7125681129982695,
+    "gas": 30122,
+    "ok": true,
+    "block": 6
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.40837794402614236,
+    "gas": 30122,
+    "ok": true,
+    "block": 6
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.1043900049990043,
+    "gas": 30122,
+    "ok": true,
+    "block": 6
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.800848176004365,
+    "gas": 30098,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.489561495021917,
+    "gas": 30122,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.1877876790240407,
+    "gas": 30122,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.8814911770168692,
+    "gas": 30122,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.56286489602644,
+    "gas": 30122,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.24858358805067837,
+    "gas": 30122,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.9419734340626746,
+    "gas": 30122,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.635851069004275,
+    "gas": 30122,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.3340368890203536,
+    "gas": 30110,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.037652428029105,
+    "gas": 30110,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.7335839030565694,
+    "gas": 30110,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.42021486698649824,
+    "gas": 30122,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.11964050307869911,
+    "gas": 30122,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.7831185009563342,
+    "gas": 30110,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.4900239090202376,
+    "gas": 30122,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.1854770389618352,
+    "gas": 30122,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.8912442110013217,
+    "gas": 30122,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.5936665370827541,
+    "gas": 30122,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.28232067509088665,
+    "gas": 30122,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.988812485942617,
+    "gas": 30122,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.6825912849744782,
+    "gas": 30110,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.3828476750059053,
+    "gas": 30122,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.0897633470594883,
+    "gas": 30122,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.7837535849539563,
+    "gas": 30122,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.4633294369559735,
+    "gas": 30122,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.16262291604653,
+    "gas": 30122,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.8335453540785238,
+    "gas": 30122,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.5306129039963707,
+    "gas": 30110,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.2134112179046497,
+    "gas": 30122,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.920147646102123,
+    "gas": 30122,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.6200332000153139,
+    "gas": 30122,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.31680221506394446,
+    "gas": 30122,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 2.0163802570896223,
+    "gas": 30122,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.6738266930915415,
+    "gas": 30110,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.365858169971034,
+    "gas": 30110,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.0614872080041096,
+    "gas": 30122,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.7684083189815283,
+    "gas": 30122,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.46029213501606137,
+    "gas": 30122,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.15720499702729285,
+    "gas": 30122,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.8343733539804816,
+    "gas": 30122,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.5414846570929512,
+    "gas": 30122,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.2401585759362206,
+    "gas": 30098,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.9439109700033441,
+    "gas": 30122,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.4133609830169007,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   }
+  ],
+  "round": {
+   "n": 1,
+   "latency_median_s": 1.9954240299994126,
+   "latency_p95_s": 1.9954240299994126,
+   "gas_median": 139061
+  },
+  "decisions": {
+   "n": 50,
+   "latency_median_s": 1.0495698180166073,
+   "latency_p95_s": 1.8935533980256876,
+   "gas_median": 30122
+  },
+  "backend": "evm"
+ },
+ "events_total": 5000,
+ "score_ms_per_event": 0.31646119835786524,
+ "session_wall_seconds": 16.604380171978846,
+ "code_version": "31b0e7d91fce",
+ "gateway_cpus": "unlimited",
+ "torch_threads": 6,
+ "detector_code_version_matches": true,
+ "host": "94740910284f"
+}

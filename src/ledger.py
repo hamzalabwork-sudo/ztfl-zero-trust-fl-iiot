@@ -180,11 +180,26 @@ class EvmLedger(MemoryLedger):
     def is_trusted(self, model_hash: str) -> bool:
         return self.contract.functions.isTrusted(self._b32(model_hash)).call()
 
+    def audit(self) -> dict:
+        """Re-derive the local records from the chain alone: every round and decision batch in the hash
+        chain must appear, in order and field for field, as a RoundCommitted / DecisionsCommitted event."""
+        ev = self.contract.events
+        on_r = [(bytes(e.args.model).hex(), [bytes(c).hex() for c in e.args.clientUpdates])
+                for e in ev.RoundCommitted.get_logs(from_block=0)]
+        on_d = [(bytes(e.args.model).hex(), e.args.tFrom, e.args.tTo, e.args.n, bytes(e.args.digest).hex())
+                for e in ev.DecisionsCommitted.get_logs(from_block=0)]
+        loc_r = [(b["model"], b["clients"]) for b in self.blocks if b["kind"] == "round"]
+        loc_d = [(b["model"], b["t"][0], b["t"][1], b["n"], b["digest"]) for b in self.blocks if b["kind"] == "decisions"]
+        return {"onchain_rounds": len(on_r), "onchain_decisions": len(on_d), "rounds_match": on_r == loc_r,
+                "decisions_match": on_d == loc_d,
+                "trusted_models": [self.is_trusted(m) for m, _ in loc_r]}
+
     def flush(self) -> dict:
         self.todo.join()
         self.sent.join()
         out = {"contract": self.contract.address, "deploy_gas": self.deploy_gas,
-               "enqueue_seconds_total": self.enqueue_seconds, "failed": sum(not s["ok"] for s in self.stats)}
+               "enqueue_seconds_total": self.enqueue_seconds, "failed": sum(not s["ok"] for s in self.stats),
+               "audit": self.audit(), "tx": self.stats}
         for kind in ("round", "decisions"):
             lat = np.array([s["latency_s"] for s in self.stats if s["kind"] == kind])
             gas = np.array([s["gas"] for s in self.stats if s["kind"] == kind])

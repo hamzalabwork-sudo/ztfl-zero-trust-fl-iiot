@@ -61,8 +61,12 @@ class Gateway:
             self.ledger = EvmLedger(RPC, art)
         else:
             self.ledger = MemoryLedger()
-        # provenance of the deployed model version (what every decision below is tagged with)
-        self.ledger.record_round(self.calib["deployed_round"], self.model_hash, [], [],
+        # provenance of the deployed model version (what every decision below is tagged with). The testbed
+        # chain is fresh and the contract takes rounds in order, so on-chain the deployed model is round 1;
+        # its FL round stays in the result as deployed_round. (Committing it as round 30 reverted, and with
+        # it every decision batch that cited the model.)
+        rnd = 1 if LEDGER == "evm" else self.calib["deployed_round"]
+        self.ledger.record_round(rnd, self.model_hash, [], [],
                                  self.calib.get("detector_val_f1_macro") or 0.0)
 
     def score(self, vec: list[float]) -> float:
@@ -189,6 +193,8 @@ class Gateway:
               f"detect={m['detection_rate']} false_iso={m['false_isolation_rate']} "
               f"reach={m['lateral_reach_mean']} score={out['score_ms_per_event']:.3f} ms/ev "
               f"ledger blocks={out['ledger']['blocks']} verified={out['ledger']['verified']}", flush=True)
+        if chain.get("backend") == "evm":
+            print(f"[gateway] chain: failed={chain['failed']} audit={chain['audit']}", flush=True)
 
 
 def main() -> None:

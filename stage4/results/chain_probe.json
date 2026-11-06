@@ -1,0 +1,101 @@
+{
+ "deploy": {
+  "gas": 630964,
+  "latency_s": 1.5260925999609753
+ },
+ "round_commit": [
+  {
+   "round": 1,
+   "clients": 0,
+   "gas": 139097,
+   "ok": true,
+   "latency_s": 2.021314700017683
+  },
+  {
+   "round": 2,
+   "clients": 1,
+   "gas": 123440,
+   "ok": true,
+   "latency_s": 1.992083300021477
+  },
+  {
+   "round": 3,
+   "clients": 5,
+   "gas": 129178,
+   "ok": true,
+   "latency_s": 1.9818495999788865
+  },
+  {
+   "round": 4,
+   "clients": 10,
+   "gas": 136323,
+   "ok": true,
+   "latency_s": 1.9938874000217766
+  },
+  {
+   "round": 5,
+   "clients": 20,
+   "gas": 150652,
+   "ok": true,
+   "latency_s": 2.095455100061372
+  },
+  {
+   "round": 6,
+   "clients": 50,
+   "gas": 193577,
+   "ok": true,
+   "latency_s": 1.9540449999039993
+  }
+ ],
+ "decision_batch": [
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.057235199958086
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.924695000052452
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.990735700004734
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9808137000072747
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0225982000119984
+  }
+ ],
+ "trusted_before": true,
+ "revoke": {
+  "gas": 32710,
+  "ok": true,
+  "latency_s": 1.9749670999590307
+ },
+ "trusted_after": false,
+ "trusted_other_round": true,
+ "guard_round_order": {
+  "gas": 25751,
+  "ok": false,
+  "latency_s": 1.956492199911736
+ },
+ "guard_unknown_model": {
+  "gas": 27511,
+  "ok": false,
+  "latency_s": 2.0726433999370784
+ },
+ "guard_not_gateway": {
+  "gas": 25301,
+  "ok": false,
+  "latency_s": 1.8886749000521377
+ },
+ "block_gas_limit": 30000000
+}

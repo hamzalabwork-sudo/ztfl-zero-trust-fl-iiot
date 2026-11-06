@@ -35,7 +35,12 @@ docker build -t ztfl-stage4:1.0 stage4
 
 # 3. a live session: 10 devices, 2 compromised from a mid-session onset, attack rate rho
 py -3.13 stage4/run_e10.py --dataset edgeiiot --n-dev 10 --m 2 --rho 1.0 --run e10_edge_m2_rho1
-#   --ledger evm   to write the provenance chain to a real local EVM node and measure write latency
+#   --ledger evm   to write the provenance chain to a real local EVM node and measure write latency;
+#                  the result's chain.failed must be 0 and chain.audit must match (records rebuilt from the chain)
+
+# 3b. all nine attacked sessions on the EVM ledger, then the ledger summary (E10-chain)
+sh stage4/evm_sweep.sh            # run from stage4/
+python stage4/summarize_chain.py  # -> stage4/results/chain_summary.json
 
 # 4. summarise
 python src/summarize_e10.py        # -> stage4/results/summary.md

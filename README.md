@@ -123,6 +123,7 @@ reported results; they assume a virtual environment at `.venv/` and two GPUs (`C
 | E8b | Statistical gate with service-level floor (offline replay) | `python src/replay_gates.py` | `results/defense_replay/` |
 | E9 | Full system: counterfactual attribution, revocation, rollback | `bash scripts/e9_pilot_queue.sh`; `python src/calibrate_trust.py`*; `bash scripts/e9_trust_queue.sh`; `bash scripts/e9_pilot_adaptive_queue.sh`; `python src/summarize_e9.py` | `results/e9/` |
 | E10 | Emulated device testbed | see [`stage4/README.md`](stage4/README.md); `python src/summarize_e10.py` | `stage4/results/` |
+| E10-chain | Testbed on the EVM ledger: gas, confirmation latency, on-chain audit | `cd stage4 && sh evm_sweep.sh`, then `python summarize_chain.py`; per-operation costs: `python chain_probe.py` (see its docstring for the anvil command) | `stage4/results/chain_summary.json`, `chain_probe.json` |
 | R1a | Realistic per-client poison budget | `python src/e9.py --variant trust --poison-budget realistic --attacks backdoor --aggregators fedavg --malicious 3 --seeds 43,44,45,46` | `results/e9/trust_realistic/` |
 | R1b | Backdoor success on unseen test rows | `python src/r1b.py` | `results/r1b/` |
 | R2 | Canary and FLTrust root disjoint from selection/calibration data | `python src/e9.py --variant trust --disjoint-root --attacks backdoor,backdoor_adaptive --aggregators fedavg --malicious 3 --seeds 43,44,45,46` | `results/e9/trust_disjoint/` |
@@ -147,15 +148,20 @@ so the E9 evaluation can be re-run without repeating the pilot.
   Linux server, so line endings differed between machines, and the hash sees bytes, not content.
 - **What the published code is.** Line endings aside, `src/` here is file-for-file identical to the
   code that produced the latest stored runs (R1a, R1b, R2), plus two read-only summary scripts
-  (`summarize_e9.py`, `summarize_e10.py`). With that code, re-running a stored E9 configuration
+  (`summarize_e9.py`, `summarize_e10.py`) and the on-chain audit added for E10-chain
+  (`EvmLedger.audit()` in `src/ledger.py`; it only extends the EVM backend, so the in-memory ledger
+  used by E5-E9 is unchanged). With that code, re-running a stored E9 configuration
   reproduced the stored result bit-for-bit on the same GPU. This repository's `src/` hashes to
-  `20e2b827a876`
+  `91d502c8dda4`
   (`python -c "import sys; sys.path.insert(0,'src'); from train_central import code_version; print(code_version())"`),
   and `.gitattributes` fixes LF line endings so that hash is the same on every platform.
 - **Data.** `scripts/check_data.py` pins the exact raw files by SHA-256; cleaning rules are versioned
   by `PREP_VERSION` in `src/datasets.py`.
 - **Ledger integrity.** The provenance ledger is a hash chain; promotion verdicts depend only on
-  integer canary counts, so any verdict can be recomputed from the ledger record.
+  integer canary counts, so any verdict can be recomputed from the ledger record. On the EVM backend,
+  every run ends with an audit that rebuilds each record from the contract's events alone and compares
+  it with the local hash chain (`chain.audit` in each `*_evm.json`), and `chain.failed` counts reverted
+  transactions; both should read 0 failures and a full match.
 
 ## 6. Compute
 

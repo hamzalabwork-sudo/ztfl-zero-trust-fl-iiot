@@ -27,35 +27,403 @@
   "blocks": 51,
   "rounds": 1,
   "decision_batches": 50,
-  "head": "ef6e939666dbf8dec41a51b96da1e546092770948af5562a0b9ebad6f4723b24",
+  "head": "3085fbb0e99355c25eeea448eca6bb4b077d08c39cf03999c4e5b5c7ed64f75e",
   "verified": true,
-  "write_seconds": 0.0016779955476522446
+  "write_seconds": 0.001638812362216413
  },
  "chain": {
   "contract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
   "deploy_gas": 630964,
-  "enqueue_seconds_total": 0.0023237239802256227,
-  "failed": 51,
+  "enqueue_seconds_total": 0.0022929682163521647,
+  "failed": 0,
+  "audit": {
+   "onchain_rounds": 1,
+   "onchain_decisions": 50,
+   "rounds_match": true,
+   "decisions_match": true,
+   "trusted_models": [
+    true
+   ]
+  },
+  "tx": [
+   {
+    "kind": "round",
+    "latency_s": 2.002275413949974,
+    "gas": 139049,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.654312400962226,
+    "gas": 30098,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.350308223045431,
+    "gas": 30098,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.0463035700377077,
+    "gas": 30098,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.7493097500409931,
+    "gas": 30098,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.4481865289853886,
+    "gas": 30098,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.13509150804020464,
+    "gas": 30098,
+    "ok": true,
+    "block": 7
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.808324067038484,
+    "gas": 30110,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.5083907060325146,
+    "gas": 30110,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.201214641914703,
+    "gas": 30110,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.8926729570375755,
+    "gas": 30098,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.5762160379672423,
+    "gas": 30098,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.27481533598620445,
+    "gas": 30110,
+    "ok": true,
+    "block": 8
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.953175334027037,
+    "gas": 30098,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.6554744419408962,
+    "gas": 30110,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.3456423670286313,
+    "gas": 30110,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.0501885570120066,
+    "gas": 30098,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.7441113620297983,
+    "gas": 30098,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.4374070449266583,
+    "gas": 30098,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.13689979899208993,
+    "gas": 30098,
+    "ok": true,
+    "block": 9
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.8392881460022181,
+    "gas": 30110,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.5483826859854162,
+    "gas": 30110,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.234464656910859,
+    "gas": 30110,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.9399100340669975,
+    "gas": 30110,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.6387984440661967,
+    "gas": 30110,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.34043740504421294,
+    "gas": 30110,
+    "ok": true,
+    "block": 10
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 2.0209547369740903,
+    "gas": 30098,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.7173850189428777,
+    "gas": 30110,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.4196234409464523,
+    "gas": 30110,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.127789342077449,
+    "gas": 30110,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.8126497190678492,
+    "gas": 30110,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.4905738739762455,
+    "gas": 30110,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.18280818697530776,
+    "gas": 30098,
+    "ok": true,
+    "block": 11
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.8740115539403632,
+    "gas": 30098,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.5669767339713871,
+    "gas": 30098,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.2545282969949767,
+    "gas": 30110,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.9560093079926446,
+    "gas": 30110,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.6620704879751429,
+    "gas": 30110,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.3599638770101592,
+    "gas": 30110,
+    "ok": true,
+    "block": 12
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 2.0164248439250514,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.7127904520602897,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.4189943260280415,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.110988789005205,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.8241836249362677,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.5135697970399633,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.2104970309883356,
+    "gas": 30110,
+    "ok": true,
+    "block": 13
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.9311903470661491,
+    "gas": 30110,
+    "ok": true,
+    "block": 14
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.6242648899788037,
+    "gas": 30110,
+    "ok": true,
+    "block": 14
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.3234430860029534,
+    "gas": 30110,
+    "ok": true,
+    "block": 14
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 1.0359673240454867,
+    "gas": 30110,
+    "ok": true,
+    "block": 14
+   },
+   {
+    "kind": "decisions",
+    "latency_s": 0.49212553503457457,
+    "gas": 30110,
+    "ok": true,
+    "block": 14
+   }
+  ],
   "round": {
    "n": 1,
-   "latency_median_s": 1.9479405509773642,
-   "latency_p95_s": 1.9479405509773642,
-   "gas_median": 25739
+   "latency_median_s": 2.002275413949974,
+   "latency_p95_s": 2.002275413949974,
+   "gas_median": 139049
   },
   "decisions": {
    "n": 50,
-   "latency_median_s": 1.0205868359771557,
-   "latency_p95_s": 1.8849108022579457,
-   "gas_median": 27499
+   "latency_median_s": 1.0805886730086058,
+   "latency_p95_s": 1.9432820898946375,
+   "gas_median": 30110
   },
   "backend": "evm"
  },
  "events_total": 5000,
- "score_ms_per_event": 0.3133245279779658,
- "session_wall_seconds": 11.402062215958722,
+ "score_ms_per_event": 0.3395522321108729,
+ "session_wall_seconds": 16.52260557503905,
  "code_version": "31b0e7d91fce",
  "gateway_cpus": "unlimited",
  "torch_threads": 6,
  "detector_code_version_matches": true,
- "host": "2048272397a3"
+ "host": "a45e5b3b9e15"
 }

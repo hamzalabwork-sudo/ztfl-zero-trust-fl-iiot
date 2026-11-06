@@ -1312,7 +1312,7 @@ on the 12-core laptop).
 | | detector latency (ms/event, CPU) | ledger blocks | chain | write latency | hash-chain verified |
 |---|---|---|---|---|---|
 | memory ledger (12 runs) | 0.25 - 0.40 | 51 | hash chain | ~2.5 ms / session | yes (12/12) |
-| edge rho 1.0, EVM (anvil) | 0.31 | 51 | real EVM node | 1.02 s median / batch | yes |
+| edge rho 1.0, EVM (anvil) | 0.31 | 51 | real EVM node | 1.02 s median / batch | yes (local chain only; all 51 txs reverted, see E10-chain) |
 
 **Findings.**
 1. **The final system transfers to the real closed loop.** Over real MQTT sessions with real
@@ -1335,7 +1335,10 @@ on the 12-core laptop).
 4. **No collateral isolation.** The benign per-event deny rate equals each detector's own benign
    flag floor (edge 0.43%, forge 1.15%, wustl 0%); Zero-Trust's continuous check isolates no benign
    device anywhere.
-5. **Enforcement is local; provenance is asynchronous and verifiable.** The hash-chained ledger
+5. **[CORRECTED 2026-11-06, see E10-chain]** The on-chain part of this finding was wrong: in this
+   run every EVM transaction reverted (the receipts were mined, so latency was measured, but
+   status was 0). The local hash chain was fine. Original text kept below for the record.
+   **Enforcement is local; provenance is asynchronous and verifiable.** The hash-chained ledger
    costs ~2.5 ms over a session. On a real EVM node (anvil, 2 s block time) decision batches confirm
    in a median of 1.02 s, written off the decision path, so enforcement latency is the detector's
    ~0.3 ms, not the chain's second. All 13 ledgers verified. C3 as designed: decide now, prove later.
@@ -1360,6 +1363,65 @@ with WUSTL's pre-isolation leakage the one honest cost, consistent with E9. Next
 benchmark above, then Stage 5 moves the containers onto the laptop-as-edge and the Raspberry Pi when
 it arrives. A packet-level firewall drop (routing device traffic through the gateway) is a possible
 Stage 4b hardening.
+
+## E10-chain -- the testbed on the EVM ledger: bug found, fixed, full sweep (C3; done 2026-11-06)
+
+**Bug.** The single E10 EVM session (edge, rho 1.0) reported `failed: 51` of 51 transactions; that field was
+not checked at the time. Cause: the gateway committed the deployed model as round 30
+(`deployed_round`) to a freshly deployed contract, but `commitRound` only accepts
+`latestRound + 1` (= 1 on a fresh chain), so it reverted with `RoundOrder`. Every decision batch then
+cited a model the chain had never registered and reverted with `UnknownModel`. Receipts were still
+mined, so the latency numbers looked normal. Gas confirms it: 25,739 (round) and 27,499 (decisions)
+in that run equal the revert costs measured by the probe below (25,751 and 27,511), against 139k and
+30.1k for successful writes. E6 (closed loop, 525 txs) was not affected: there, rounds are committed
+in order and all 525 succeeded.
+
+**Fix.**
+- `stage4/gateway/app.py`: on the EVM backend the deployed model is committed as on-chain round 1
+  (the fresh testbed chain's first model); the FL round stays in the result as `deployed_round`.
+  Memory-ledger runs are unchanged.
+- `src/ledger.py` `EvmLedger.audit()`: after flushing, read every `RoundCommitted` and
+  `DecisionsCommitted` event from the contract and compare them, in order and field by field, with
+  the local hash chain; also `isTrusted` for every committed model. `flush()` now also returns the
+  audit and the per-transaction stats (`tx`: kind, latency, gas, ok, block).
+- The old result is kept in `stage4/results/superseded_revert/`.
+
+**Run.** All nine attacked testbed configurations (3 datasets x rho 1.0/0.5/0.2, m = 2, seed 42,
+10 devices x 500 events) on the EVM ledger: `stage4/evm_sweep.sh`; summary
+`python stage4/summarize_chain.py` -> `stage4/results/chain_summary.json`. Per-operation costs:
+`stage4/chain_probe.py` on a throwaway anvil (2 s blocks) -> `stage4/results/chain_probe.json`.
+
+**Results (testbed, 9 sessions, 459 transactions).**
+
+| quantity | value |
+|---|---|
+| failed transactions | 0 / 459 |
+| on-chain audit (records reconstructed from events = local hash chain) | 459 / 459, all 9 sessions |
+| deployed model trusted on-chain | 9 / 9 |
+| access-control metrics, EVM vs memory ledger | identical in all 9 (up to float summation order, 1e-16) |
+| decision-batch confirmation, median / p95 / max | 1.04 s / 1.90 s / 2.03 s |
+| decision-batch gas | 30,086-30,122 (median 30,110; ~301 gas per decision) |
+| gateway on-path cost per ledger record (queue put, container) | 42 us median |
+| detector + authorizer per event (same sessions) | 0.34 ms median |
+
+**Probe (per operation).** Deploy 630,964 gas. Round commit with 0/1/5/10/20/50 client hashes:
+139,097 (first round) / 123,440 / 129,178 / 136,323 / 150,652 / 193,577, i.e. ~122,000 + 1,433 per
+client hash after the first round. Decision batch 30,122. `revokeRound` 32,710, confirmed in 1.97 s;
+`isTrusted` true before and false after, while another round stays trusted. Guards revert as
+intended: out-of-order round 25,751; decision citing an unregistered model 27,511; decision from a
+non-gateway account 25,301. Block gas limit 30M, so one block holds ~996 decision batches (~99,600
+decisions, ~49,800 per second at 2 s blocks), about 18x a one-core gateway's 2,700 events/s.
+
+**Findings.**
+1. With the fix, the testbed's provenance is genuinely on-chain: every record is reconstructable from
+   the contract's events alone, and enforcement outcomes do not depend on the ledger backend.
+2. Confirmation latency is uniform over one block interval (max 2.03 s), so every batch is included in
+   the next block; the gateway's on-path cost is a 42 us queue put.
+3. The contract's `UnknownModel` guard is exactly what exposed the bug: decisions cannot be anchored to
+   a model the chain has not registered. Lesson: always check `failed` and audit the chain, not only
+   the local hash chain.
+
+---
 
 ## Planned
 - **E10-bench (Pi-class + arm64); Stage 5 laptop-as-edge then Raspberry Pi.**
