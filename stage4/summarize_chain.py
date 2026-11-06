@@ -5,11 +5,13 @@ latency), the on-chain audit (every local record re-derived from contract events
 access-control metrics equal the memory-ledger run of the same configuration (the chain must not
 change enforcement). Writes results/chain_summary.json (the figure reads it) and prints a table.
 
-  python summarize_chain.py
+  python summarize_chain.py                 # local EVM node (anvil): *_evm.json
+  python summarize_chain.py purechain       # live PureChain: *_purechain.json -> chain_summary_purechain.json
 """
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -19,11 +21,12 @@ DATASETS, RHOS = ["edgeiiot", "forge", "wustl"], ["1.0", "0.5", "0.2"]
 
 
 def main() -> None:
+    tag = sys.argv[1] if len(sys.argv) > 1 else "evm"
     rows, lat_dec, lat_round, gas = [], [], [], {"round": [], "decisions": []}
     enq_us, score_ms, by_ds = [], [], {ds: [] for ds in DATASETS}
     for ds in DATASETS:
         for rho in RHOS:
-            evm = json.loads((R / f"e10_{ds}_m2_rho{rho}_evm.json").read_text())
+            evm = json.loads((R / f"e10_{ds}_m2_rho{rho}_{tag}.json").read_text())
             mem = json.loads((R / f"e10_{ds}_m2_rho{rho}.json").read_text())
             c, tx = evm["chain"], evm["chain"]["tx"]
             same = all(np.isclose(evm["metrics"][k], mem["metrics"][k], rtol=0, atol=1e-12)    # float summation order
@@ -61,7 +64,7 @@ def main() -> None:
                       "enqueue_us_per_write_median": float(np.median(enq_us)),
                       "score_ms_per_event_median": float(np.median(score_ms))},
            "decision_latencies_s_by_dataset": by_ds}
-    (R / "chain_summary.json").write_text(json.dumps(out, indent=1))
+    (R / ("chain_summary.json" if tag == "evm" else f"chain_summary_{tag}.json")).write_text(json.dumps(out, indent=1))
     print(f"{'dataset':9} {'rho':4} {'tx':>3} {'fail':>4} {'chain=local':>11} {'trusted':>7} {'=memory':>7} "
           f"{'med s':>6} {'p95 s':>6}")
     for r in rows:

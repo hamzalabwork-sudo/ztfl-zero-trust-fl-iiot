@@ -1423,6 +1423,157 @@ decisions, ~49,800 per second at 2 s blocks), about 18x a one-core gateway's 2,7
 
 ---
 
+## E11 -- Ablation of the three pillars: Zero Trust, federated learning, blockchain (done 2026-11-06)
+
+**Question.** The study ablates components inside the gateway (E5 to E5e) and inside the defense
+(E8 to E9), but not the architecture's pillars. What does each pillar contribute, measured?
+
+**Method.** One pillar removed at a time, from existing paired results plus one new run.
+- **Zero Trust at the gateway (continuous authorization).** Per-event gate vs the final gateway on
+  the clean detector: E5 `per_event` (hist_empirical) vs E5e `monotone_balanced` at Lorden's h,
+  cusum_sprt_mix. 1,000 devices x 500 events, 20% compromised, seeds 42-46.
+- **Zero Trust for the FL clients (deployment gate + counterfactual revocation).** The gateway behind
+  a poisoned last-round FedAvg model (E7 Table E7-3, m = 3, monotone + Lorden, cusum_sprt_mix, seeds
+  42-46) vs the full system (E9, `results/e9/summary_long.csv`, variant trust, track canary_stat_slo,
+  m = 3, backdoor onset 1, monotone, seeds 43-46). The E9 baseline variant was not run through the
+  gateway, so E7 supplies the "without" row; seeds differ (42-46 vs 43-46), stated with the result.
+- **Federated learning.** Centralized MLP (E1) vs federated MLP (E2), test macro-F1, keep settings.
+- **Blockchain.** Memory ledger vs EVM ledger: access-control metrics of the nine E10-chain sessions
+  (identical). New: `stage4/tamper_probe.py` on a throwaway anvil (2 s blocks): one round + 20
+  decision batches written to both ledgers; an insider then (1) edits a digest in place, (2) edits and
+  recomputes the local hash chain, (3) deletes a batch and recomputes, (4) reattributes a batch to
+  another model and recomputes. Output `stage4/results/tamper_probe.json`.
+
+**Results.**
+
+| pillar removed | access control | accountability / deployment |
+|---|---|---|
+| none (full system) | attackers isolated in 2 events at rho 1; grants 0 / 0.10 / 0.06% (clean detector) | every record re-derivable from the chain |
+| continuous authorization | never isolates; grants 0.01 / 6.95 / 6.15%; reach 0 / 19.3 / 18.2 devices (rho 1) | unchanged |
+| Zero Trust for FL clients | gateway grants at rho 0.2: 38.3 / 100 / 99.3% vs full system 0.21 / 5.83 / 26.10% (m = 3, onset 1); rho 1: 0.97 / 88.1 / 8.5% vs 0.01 / 5.09 / 0.88% | poisoned updates neither attributed nor revoked |
+| federated learning | macro-F1 central 0.9983 / 0.9891 / 0.9995 vs federated 0.9982 / 0.9918 / 0.9993 | raw traffic leaves every site; no clients to revoke |
+| blockchain | identical in 9 / 9 testbed sessions | tamper: local hash chain detects 1 / 4 (only the in-place edit); on-chain audit detects 4 / 4 |
+
+(Edge / Forge / WUSTL.) Final gateway on the clean detector, per rho (E5e balanced): Edge grants 0 at
+every rho, isolated 100 / 100 / 98.0%, TTI 2.0 / 5.2 / 26.5; Forge 0.10 / 1.76 / 4.88%, isolated
+100 / 99.6 / 89.3%, TTI 2.0 / 5.9 / 25.1; WUSTL 0.06 / 0.18 / 1.37%, isolated 100 / 100 / 99.5%,
+TTI 2.0 / 5.4 / 29.1 (rho 1 / 0.5 / 0.2). False isolation 0 in the mean everywhere except Edge rho 0.5
+(0.03%); worst seed 0.12%.
+
+**Findings.**
+1. Every pillar buys a different, measured property; none is redundant.
+2. Continuous authorization is what turns a per-event filter into isolation: without it no compromised
+   device is ever cut off and each reaches 18-19 others on Forge/WUSTL.
+3. The gateway cannot compensate for a poisoned model (38-100% of backdoor events granted at rho 0.2);
+   client-side Zero Trust is what makes the gateway's evidence trustworthy.
+4. Federated learning costs no detection accuracy (within 0.003 macro-F1); its value is that raw
+   industrial traffic stays on site, and it is the reason client-level Zero Trust is needed.
+5. The blockchain changes no access decision; it is what makes the log insider-proof. A local hash
+   chain only detects naive edits: an insider who recomputes it passes local verification in all
+   three rewrite cases, and only the on-chain audit catches them.
+
+---
+
+## E11b -- Per-component enforcement cost, and the pillar table in component-ablation form (done 2026-11-06)
+
+**Why.** The pillar ablation (E11) is now reported per dataset in the format of a component ablation:
+rows add one pillar at a time (FL detector only; + Zero-Trust gateway; + Zero Trust for the FL clients
+with a local log; full framework with the blockchain), columns macro-F1, backdoor success, attack events
+granted (rho 1 / 0.2), per-event cost and auditability. The cost column needed a per-component timing.
+
+**Method.** `stage4/bench_components.py`: the gateway's per-event path replayed on 5,000 held-out events
+of each dataset's deployed bundle, one torch thread, 10 devices, median of 5 repetitions after a warm-up:
+detector scoring, evidence + CUSUM/SPRT authorizer step, local hash-chain append per 100 decisions; the
+on-chain write is the queue put measured in the testbed (42 us local node, 38 us PureChain, per 100
+decisions). Laptop CPU, native Python 3.13. Output `stage4/results/bench_components.json`.
+
+**Results (us per event).**
+
+| dataset | detector | + authorizer | + local log | + on-chain queue put |
+|---|---|---|---|---|
+| Edge | 60 | 73 | 73 | 74 |
+| Forge | 73 | 86 | 87 | 87 |
+| WUSTL | 60 | 71 | 72 | 72 |
+
+These are native single-thread costs; the 0.375 ms/event figure is the containerized one-core testbed
+gateway (Docker on the laptop, including MQTT and JSON handling) and stays the deployment figure.
+
+**Table values** (m = 3, backdoor from round 1, FedAvg): macro-F1 and backdoor success from E9
+(`summary_long.csv`, seeds 43-46; baseline/last for the first two rows, trust/canary_stat_slo for the last
+two); granted for the first two rows from E7 Table E7-3 (last-round model, per_event and cusum_sprt_mix,
+seeds 42-46), for the last two from E9 (monotone evidence, seeds 43-46). The full-framework row equals
+the row before it in every decision column (identical decisions with either ledger, E10-chain / E12);
+it differs in auditability (local hash chain: insider rewrite undetected; chain: detected, E11).
+
+---
+
+## E12 -- The ledger on the live PureChain network (C3; done 2026-11-06; reported as a deployment check)
+
+**Status.** Kept alongside the local-EVM results (E6, E10-chain, E11): the local node is the controlled
+setting, the live network a deployment check.
+
+**Question.** Everything on-chain so far used a local EVM node (anvil, 2 s blocks) standing in for
+PureChain. Does the same ledger work on the live PureChain network, and what changes?
+
+**Network.** Public PureChain: RPC https://purechainnode.com, chain ID 900520900520, Clique PoA (PoA2),
+free gas (base fee and gas price 0), about 1 s blocks while active, sealing pauses when idle. Client
+`PureChain/v1.13.15-purechain-1.0.1`.
+
+**Method.**
+- `src/ledger.py` `EvmLedger(..., keys=(coordinator, gateway))`: transactions signed locally with a zero
+  gas price and an explicit nonce per account (a lock serializes the sender thread and `revoke`);
+  Clique headers handled with web3's `ExtraDataToPOAMiddleware`; the audit reads events from the
+  deployment block. Without `keys` the anvil path is unchanged (regression: identical gas on anvil,
+  `results/chain_probe_anvil_regression.json`).
+- Keys: two throwaway test keys generated locally, stored in `~/.ztfl/purechain_keys.json` outside every
+  repository. No funds are needed on a free-gas network; no wallet's private key
+  is needed. The keys reach the gateway container only through the `LEDGER_KEYS` environment
+  variable (`docker-compose.gen.yml` contains the `${LEDGER_KEYS}` placeholder, not the key).
+- TLS: this laptop's HTTPS inspection root is added to a CA bundle (`~/.ztfl/ca-bundle.pem`, via
+  `REQUESTS_CA_BUNDLE`); verification stays on.
+- Runs: `stage4/chain_probe.py --rpc ... --tag purechain` (per operation, 20 decision batches);
+  `stage4/tamper_probe.py --rpc ... --tag purechain`; `stage4/purechain_sweep.sh` (the nine attacked
+  testbed sessions, `run_e10.py --rpc https://purechainnode.com`); `summarize_chain.py purechain`.
+
+**Problem found and fixed: RPC lag in the audit.** In the first sweep, two sessions (Forge rho 0.5, WUSTL
+rho 1.0) reported 48 of 50 decision events on-chain although all 51 transactions had confirmed with
+status 1. Re-querying the same contracts minutes later returned all 50 events: the public endpoint had
+answered the log query from a node that had not yet indexed the latest blocks. Fix: `audit()` waits until
+the endpoint reports the head block of our receipts and re-queries (2 s apart, up to 15 times) while it
+returns fewer events than were confirmed; a really missing record still shows as a mismatch. The two
+sessions were rerun (one needed a second attempt, confirming the cause); the first results are kept in
+`stage4/results/superseded_rpclag/`.
+
+**Results** (local EVM node from E10-chain / live PureChain).
+
+| quantity | local EVM node | live PureChain |
+|---|---|---|
+| testbed transactions, failed | 459, 0 | 459, 0 |
+| records rebuilt from the chain | 459 / 459 | 459 / 459 |
+| decision batch confirmation, median / p95 / max | 1.04 / 1.90 / 2.03 s | 1.64 / 2.07 / 2.50 s |
+| round commit confirmation, median | 2.00 s | 1.97 s |
+| gas per decision batch | 30,110 | 30,110 (cost 0) |
+| gateway on-path cost per write | 42 us | 38 us |
+| decisions equal to the in-memory ledger | 9 / 9 | 9 / 9 |
+
+Per-operation probe on PureChain (sent one at a time, each waited for): gas identical to anvil for every
+operation (deploy 630,964; round commit 123,440 + 1,433 per client hash; decision batch
+30,110 to 30,122; revocation 32,710); about 1.5 to 2.6 s per transaction; revocation
+1.99 s, after which the model reads untrusted while other rounds stay trusted; all
+three guards revert. Tamper test on PureChain: identical to anvil (local hash chain detects 1 of 4, the
+on-chain audit 4 of 4).
+
+**Findings.**
+1. The ledger works unchanged on the live network: every transaction succeeds, every record is
+   re-derivable from the public chain, the safeguards and revocation behave the same, and enforcement
+   is unaffected.
+2. Gas is identical (same EVM), but on PureChain it costs nothing.
+3. Confirmation is slightly slower than the local node in the median (shared network, HTTPS endpoint,
+   idle-pause sealing) and stays near one to two seconds; it remains off the decision path.
+4. Auditing against a public endpoint needs to wait for the endpoint to catch up; recorded and fixed.
+
+---
+
 ## Planned
 - **E10-bench (Pi-class + arm64); Stage 5 laptop-as-edge then Raspberry Pi.**
 

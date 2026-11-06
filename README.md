@@ -124,6 +124,9 @@ reported results; they assume a virtual environment at `.venv/` and two GPUs (`C
 | E9 | Full system: counterfactual attribution, revocation, rollback | `bash scripts/e9_pilot_queue.sh`; `python src/calibrate_trust.py`*; `bash scripts/e9_trust_queue.sh`; `bash scripts/e9_pilot_adaptive_queue.sh`; `python src/summarize_e9.py` | `results/e9/` |
 | E10 | Emulated device testbed | see [`stage4/README.md`](stage4/README.md); `python src/summarize_e10.py` | `stage4/results/` |
 | E10-chain | Testbed on the EVM ledger: gas, confirmation latency, on-chain audit | `cd stage4 && sh evm_sweep.sh`, then `python summarize_chain.py`; per-operation costs: `python chain_probe.py` (see its docstring for the anvil command) | `stage4/results/chain_summary.json`, `chain_probe.json` |
+| E11 | Ablation of the pillars (Zero Trust, FL, blockchain); insider tamper test | `cd stage4 && python tamper_probe.py` (anvil, see docstring); the other rows reuse E5e, E7, E9, E1/E2 | `stage4/results/tamper_probe.json` |
+| E11b | Per-component enforcement cost (detector, authorizer, ledger) | `cd stage4 && python bench_components.py` | `stage4/results/bench_components.json` |
+| E12 | The ledger on the live PureChain network (deployment check) | see [`stage4/README.md`](stage4/README.md), "Live PureChain"; `python summarize_chain.py purechain` | `stage4/results/*_purechain.json`, `chain_summary_purechain.json` |
 | R1a | Realistic per-client poison budget | `python src/e9.py --variant trust --poison-budget realistic --attacks backdoor --aggregators fedavg --malicious 3 --seeds 43,44,45,46` | `results/e9/trust_realistic/` |
 | R1b | Backdoor success on unseen test rows | `python src/r1b.py` | `results/r1b/` |
 | R2 | Canary and FLTrust root disjoint from selection/calibration data | `python src/e9.py --variant trust --disjoint-root --attacks backdoor,backdoor_adaptive --aggregators fedavg --malicious 3 --seeds 43,44,45,46` | `results/e9/trust_disjoint/` |
@@ -150,9 +153,11 @@ so the E9 evaluation can be re-run without repeating the pilot.
   code that produced the latest stored runs (R1a, R1b, R2), plus two read-only summary scripts
   (`summarize_e9.py`, `summarize_e10.py`) and the on-chain audit added for E10-chain
   (`EvmLedger.audit()` in `src/ledger.py`; it only extends the EVM backend, so the in-memory ledger
-  used by E5-E9 is unchanged). With that code, re-running a stored E9 configuration
+  used by E5-E9 is unchanged), extended for E12 with locally signed zero-gas transactions for public
+  networks (`EvmLedger(..., keys=...)`; without keys the anvil path is unchanged and gives identical gas).
+  With that code, re-running a stored E9 configuration
   reproduced the stored result bit-for-bit on the same GPU. This repository's `src/` hashes to
-  `91d502c8dda4`
+  `473b4cbb2c5b`
   (`python -c "import sys; sys.path.insert(0,'src'); from train_central import code_version; print(code_version())"`),
   and `.gitattributes` fixes LF line endings so that hash is the same on every platform.
 - **Data.** `scripts/check_data.py` pins the exact raw files by SHA-256; cleaning rules are versioned

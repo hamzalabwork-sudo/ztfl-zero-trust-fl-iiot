@@ -1,0 +1,35 @@
+{
+ "onchain_failed": 0,
+ "untouched": {
+  "local_hash_chain_verifies": true,
+  "onchain_audit_matches": true,
+  "local_decisions": 20,
+  "onchain_decisions": 20
+ },
+ "edit_in_place": {
+  "local_hash_chain_verifies": false,
+  "onchain_audit_matches": false,
+  "local_decisions": 20,
+  "onchain_decisions": 20
+ },
+ "edit_and_rehash": {
+  "local_hash_chain_verifies": true,
+  "onchain_audit_matches": false,
+  "local_decisions": 20,
+  "onchain_decisions": 20
+ },
+ "delete_and_rehash": {
+  "local_hash_chain_verifies": true,
+  "onchain_audit_matches": false,
+  "local_decisions": 19,
+  "onchain_decisions": 20
+ },
+ "swap_model_and_rehash": {
+  "local_hash_chain_verifies": true,
+  "onchain_audit_matches": false,
+  "local_decisions": 20,
+  "onchain_decisions": 20
+ },
+ "rpc": "https://purechainnode.com",
+ "contract": "0x6dfd5c92835573B5e9be1c3F21f6778328de3eE5"
+}

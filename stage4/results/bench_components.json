@@ -1,0 +1,30 @@
+{
+ "setup": {
+  "events": 5000,
+  "repetitions": 5,
+  "devices": 10,
+  "torch_threads": 1,
+  "batch": 100
+ },
+ "onchain_write_queue_put": {
+  "local_evm_us_per_record": 42.069356377218284,
+  "purechain_us_per_record": 37.727327378211065
+ },
+ "datasets": {
+  "edgeiiot": {
+   "detector_ms": 0.06008309999015182,
+   "authorizer_ms": 0.01285095999483019,
+   "local_ledger_ms": 0.0002407599939033389
+  },
+  "forge": {
+   "detector_ms": 0.07332220000680537,
+   "authorizer_ms": 0.013119759992696345,
+   "local_ledger_ms": 0.00023475999478250742
+  },
+  "wustl": {
+   "detector_ms": 0.06027373999822885,
+   "authorizer_ms": 0.01121541999746114,
+   "local_ledger_ms": 0.00021280001383274793
+  }
+ }
+}

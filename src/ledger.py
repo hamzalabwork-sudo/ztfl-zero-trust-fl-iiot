@@ -110,25 +110,42 @@ class EvmLedger(MemoryLedger):
     Records are appended locally first (hash chain); the on-chain write is queued to a background
     thread, so record_* returns immediately -- the gateway never waits for the chain. A second
     thread waits for receipts and timestamps confirmations. `flush()` blocks until everything is
-    confirmed and returns latency / gas statistics. Uses the node's unlocked accounts (anvil):
-    account 0 = FL coordinator, account 1 = gateway.
+    confirmed and returns latency / gas statistics.
+
+    Accounts: without `keys`, the node's unlocked accounts (anvil): account 0 = FL coordinator,
+    account 1 = gateway. With `keys` = (coordinator, gateway) private keys, transactions are signed
+    locally with a zero gas price, as a free-gas public network such as PureChain requires.
     """
 
     GAS = 3_000_000  # explicit gas: skips estimation, so a decision may be sent before its round is mined
 
-    def __init__(self, rpc_url: str, artifact: str):
+    def __init__(self, rpc_url: str, artifact: str, keys: tuple[str, str] | None = None):
         super().__init__()
         import queue
         import threading
         from web3 import Web3
+        from web3.middleware import ExtraDataToPOAMiddleware
         self.w3 = Web3(Web3.HTTPProvider(rpc_url, request_kwargs={"timeout": 120}))
-        self.coordinator, self.gateway = self.w3.eth.accounts[:2]
+        self.w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)  # Clique PoA headers (PureChain)
+        self.signers: dict = {}
+        self._lock = threading.Lock()
+        if keys:
+            from eth_account import Account
+            accts = [Account.from_key(k) for k in keys]
+            self.signers = {a.address: a for a in accts}
+            self.coordinator, self.gateway = accts[0].address, accts[1].address
+            self.chain_id = self.w3.eth.chain_id
+            self.nonce = {a: self.w3.eth.get_transaction_count(a, "pending") for a in self.signers}
+        else:
+            self.coordinator, self.gateway = self.w3.eth.accounts[:2]
         art = json.loads(open(artifact).read())
         factory = self.w3.eth.contract(abi=art["abi"], bytecode=art["bytecode"]["object"])
-        receipt = self.w3.eth.wait_for_transaction_receipt(factory.constructor().transact({"from": self.coordinator}))
+        receipt = self.w3.eth.wait_for_transaction_receipt(self._send(factory.constructor(), self.coordinator),
+                                                           timeout=600)
         self.contract = self.w3.eth.contract(address=receipt.contractAddress, abi=art["abi"])
+        self.deploy_block = receipt.blockNumber
         self.w3.eth.wait_for_transaction_receipt(
-            self.contract.functions.setGateway(self.gateway, True).transact({"from": self.coordinator}))
+            self._send(self.contract.functions.setGateway(self.gateway, True), self.coordinator), timeout=600)
         self.deploy_gas = receipt.gasUsed
         self.sent: queue.Queue = queue.Queue()
         self.todo: queue.Queue = queue.Queue()
@@ -141,10 +158,21 @@ class EvmLedger(MemoryLedger):
     def _b32(hex_digest: str) -> bytes:
         return bytes.fromhex(hex_digest)
 
+    def _send(self, fn, sender):
+        """Submit a contract call or deployment; returns the transaction hash without waiting."""
+        if sender not in self.signers:
+            return fn.transact({"from": sender, "gas": self.GAS})
+        with self._lock:  # one nonce sequence per account, shared by the sender thread and revoke()
+            tx = fn.build_transaction({"from": sender, "gas": self.GAS, "gasPrice": 0,
+                                       "nonce": self.nonce[sender], "chainId": self.chain_id})
+            h = self.w3.eth.send_raw_transaction(self.signers[sender].sign_transaction(tx).raw_transaction)
+            self.nonce[sender] += 1
+            return h
+
     def _sender(self) -> None:
         while True:
             kind, fn, sender, t_enq = self.todo.get()
-            self.sent.put((kind, fn.transact({"from": sender, "gas": self.GAS}), t_enq))
+            self.sent.put((kind, self._send(fn, sender), t_enq))
             self.todo.task_done()  # after the put, so flush() cannot see both queues empty mid-handoff
 
     def _confirmer(self) -> None:
@@ -175,23 +203,38 @@ class EvmLedger(MemoryLedger):
 
     def revoke(self, rnd: int, reason: str) -> None:
         self.w3.eth.wait_for_transaction_receipt(
-            self.contract.functions.revokeRound(rnd, reason).transact({"from": self.coordinator}))
+            self._send(self.contract.functions.revokeRound(rnd, reason), self.coordinator), timeout=600)
 
     def is_trusted(self, model_hash: str) -> bool:
         return self.contract.functions.isTrusted(self._b32(model_hash)).call()
 
-    def audit(self) -> dict:
+    def audit(self, retries: int = 15) -> dict:
         """Re-derive the local records from the chain alone: every round and decision batch in the hash
-        chain must appear, in order and field for field, as a RoundCommitted / DecisionsCommitted event."""
+        chain must appear, in order and field for field, as a RoundCommitted / DecisionsCommitted event.
+
+        A public RPC endpoint can be served by several nodes, and the one answering the log query may not
+        yet have indexed the blocks our receipts came from. So the audit first waits until the endpoint
+        reports that head, and re-queries (2 s apart) while it returns fewer events than were confirmed. A
+        record that is really missing still shows up as a mismatch once the retries are exhausted."""
         ev = self.contract.events
-        on_r = [(bytes(e.args.model).hex(), [bytes(c).hex() for c in e.args.clientUpdates])
-                for e in ev.RoundCommitted.get_logs(from_block=0)]
-        on_d = [(bytes(e.args.model).hex(), e.args.tFrom, e.args.tTo, e.args.n, bytes(e.args.digest).hex())
-                for e in ev.DecisionsCommitted.get_logs(from_block=0)]
         loc_r = [(b["model"], b["clients"]) for b in self.blocks if b["kind"] == "round"]
         loc_d = [(b["model"], b["t"][0], b["t"][1], b["n"], b["digest"]) for b in self.blocks if b["kind"] == "decisions"]
+        confirmed = [s for s in self.stats if s["ok"]]
+        head = max((s["block"] for s in self.stats), default=self.deploy_block)
+        n_r = sum(s["kind"] == "round" for s in confirmed)
+        n_d = sum(s["kind"] == "decisions" for s in confirmed)
+        on_r, on_d = [], []
+        for attempt in range(1, retries + 1):
+            if self.w3.eth.block_number >= head:
+                on_r = [(bytes(e.args.model).hex(), [bytes(c).hex() for c in e.args.clientUpdates])
+                        for e in ev.RoundCommitted.get_logs(from_block=self.deploy_block)]
+                on_d = [(bytes(e.args.model).hex(), e.args.tFrom, e.args.tTo, e.args.n, bytes(e.args.digest).hex())
+                        for e in ev.DecisionsCommitted.get_logs(from_block=self.deploy_block)]
+                if len(on_r) >= n_r and len(on_d) >= n_d:
+                    break
+            time.sleep(2)
         return {"onchain_rounds": len(on_r), "onchain_decisions": len(on_d), "rounds_match": on_r == loc_r,
-                "decisions_match": on_d == loc_d,
+                "decisions_match": on_d == loc_d, "attempts": attempt,
                 "trusted_models": [self.is_trusted(m) for m, _ in loc_r]}
 
     def flush(self) -> dict:

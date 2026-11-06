@@ -58,7 +58,8 @@ class Gateway:
         if LEDGER == "evm":
             from ledger import EvmLedger
             art = "/app/contracts/out/Provenance.sol/Provenance.json"
-            self.ledger = EvmLedger(RPC, art)
+            keys = os.environ.get("LEDGER_KEYS", "")  # "coordinator,gateway" private keys for a public chain
+            self.ledger = EvmLedger(RPC, art, keys=tuple(keys.split(",")) if keys else None)
         else:
             self.ledger = MemoryLedger()
         # provenance of the deployed model version (what every decision below is tagged with). The testbed

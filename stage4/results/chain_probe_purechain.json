@@ -1,0 +1,211 @@
+{
+ "rpc": "https://purechainnode.com",
+ "chain_id": 900520900520,
+ "client": "PureChain/PureChain-Idle-2/v1.13.15-purechain-1.0.1-e797061c-20261013/linux-amd64/go1.21.12",
+ "contract": "0xd5e504b992c6d36342A23F58cA8355284fd44828",
+ "deploy": {
+  "gas": 630964,
+  "deploy_plus_setgateway_s": 3.9270232999697328,
+  "block": 1924332
+ },
+ "round_commit": [
+  {
+   "round": 1,
+   "clients": 0,
+   "gas": 139097,
+   "ok": true,
+   "latency_s": 1.865686000091955,
+   "block": 1924336
+  },
+  {
+   "round": 2,
+   "clients": 1,
+   "gas": 123440,
+   "ok": true,
+   "latency_s": 2.0214679000200704,
+   "block": 1924338
+  },
+  {
+   "round": 3,
+   "clients": 5,
+   "gas": 129178,
+   "ok": true,
+   "latency_s": 2.578141100006178,
+   "block": 1924340
+  },
+  {
+   "round": 4,
+   "clients": 10,
+   "gas": 136323,
+   "ok": true,
+   "latency_s": 1.468592599965632,
+   "block": 1924342
+  },
+  {
+   "round": 5,
+   "clients": 20,
+   "gas": 150652,
+   "ok": true,
+   "latency_s": 1.9763115000678226,
+   "block": 1924344
+  },
+  {
+   "round": 6,
+   "clients": 50,
+   "gas": 193577,
+   "ok": true,
+   "latency_s": 2.0145066999830306,
+   "block": 1924346
+  }
+ ],
+ "decision_batch": [
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9880162999033928,
+   "block": 1924348
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.1049532999750227,
+   "block": 1924350
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.8364908999064937,
+   "block": 1924352
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0079141000751406,
+   "block": 1924354
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.08904619992245,
+   "block": 1924356
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9133153000148013,
+   "block": 1924358
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0284166000783443,
+   "block": 1924360
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0072258000727743,
+   "block": 1924362
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0094725999515504,
+   "block": 1924364
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9797323000384495,
+   "block": 1924366
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9746152000734583,
+   "block": 1924368
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0965475999983028,
+   "block": 1924370
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.8973540000151843,
+   "block": 1924372
+  },
+  {
+   "gas": 30110,
+   "ok": true,
+   "latency_s": 2.0584449999732897,
+   "block": 1924374
+  },
+  {
+   "gas": 30110,
+   "ok": true,
+   "latency_s": 1.9442322000395507,
+   "block": 1924376
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0064844000153244,
+   "block": 1924378
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0258419000310823,
+   "block": 1924380
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0297763000708073,
+   "block": 1924382
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.947639900026843,
+   "block": 1924384
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9763690999243408,
+   "block": 1924386
+  }
+ ],
+ "trusted_before": true,
+ "revoke": {
+  "gas": 32710,
+  "ok": true,
+  "latency_s": 1.9853985999943689,
+  "block": 1924388
+ },
+ "trusted_after": false,
+ "trusted_other_round": true,
+ "guard_round_order": {
+  "gas": 25751,
+  "ok": false,
+  "latency_s": 1.7950169999385253,
+  "block": 1924390
+ },
+ "guard_unknown_model": {
+  "gas": 27511,
+  "ok": false,
+  "latency_s": 2.066528099938296,
+  "block": 1924392
+ },
+ "guard_not_gateway": {
+  "gas": 25301,
+  "ok": false,
+  "latency_s": 1.965194300049916,
+  "block": 1924394
+ },
+ "block_gas_limit": 30000000
+}

@@ -39,11 +39,15 @@ def svc_device(i: int, role: str, tau: int, rho: float, atk: str, args) -> str:
 
 
 def compose(args, compromised: dict[int, int], atk: str) -> str:
+    local_evm = args.ledger == "evm" and not args.rpc
     anvil = """  anvil:
     image: ghcr.io/foundry-rs/foundry:v1.8.4
     entrypoint: ["anvil", "--host", "0.0.0.0", "--port", "18545", "--block-time", "2", "--silent"]
-""" if args.ledger == "evm" else ""
-    gw_dep = "[broker, anvil]" if args.ledger == "evm" else "[broker]"
+""" if local_evm else ""
+    gw_dep = "[broker, anvil]" if local_evm else "[broker]"
+    # external chain: keys come from the host environment at `up` time, never written to this file
+    gw_chain = ("\n      LEDGER_KEYS: \"${LEDGER_KEYS:-}\""
+                "\n      REQUESTS_CA_BUNDLE: \"/etc/ssl/certs/ca-certificates.crt\"") if args.rpc else ""
     gw_limits = f"\n    cpus: {args.gateway_cpus}\n    mem_limit: {args.gateway_mem}" if args.gateway_cpus else ""
     gw_threads = (f"\n      OMP_NUM_THREADS: \"{args.gateway_threads}\""
                   f"\n      MKL_NUM_THREADS: \"{args.gateway_threads}\"") if args.gateway_threads else ""
@@ -72,9 +76,9 @@ services:
       N_DEV: "{args.n_dev}"
       T_EV: "{args.t_ev}"
       LEDGER: "{args.ledger}"
-      RPC: "http://anvil:18545"
+      RPC: "{args.rpc or 'http://anvil:18545'}"
       BROKER: "broker"
-      GATEWAY_CPUS: "{args.gateway_cpus or ''}"{gw_threads}
+      GATEWAY_CPUS: "{args.gateway_cpus or ''}"{gw_threads}{gw_chain}
 {devices}"""
 
 
@@ -93,6 +97,8 @@ def main() -> None:
     ap.add_argument("--tick", type=float, default=0.03)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--ledger", choices=["memory", "evm"], default="memory")
+    ap.add_argument("--rpc", default=None, help="external EVM chain for --ledger evm (e.g. https://purechainnode.com); "
+                    "keys from the LEDGER_KEYS environment variable; default: a local anvil service")
     ap.add_argument("--gateway-cpus", default=None, help="constrain the gateway to N cpus (Pi stand-in, e.g. 1.0)")
     ap.add_argument("--gateway-mem", default="1g", help="gateway memory limit when --gateway-cpus is set")
     ap.add_argument("--gateway-threads", default="", help="OMP/MKL threads in the gateway (empty = torch default)")

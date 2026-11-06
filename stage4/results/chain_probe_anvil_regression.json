@@ -1,0 +1,121 @@
+{
+ "rpc": "http://127.0.0.1:18555",
+ "chain_id": 31337,
+ "client": "anvil/v1.8.4",
+ "contract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+ "deploy": {
+  "gas": 630964,
+  "deploy_plus_setgateway_s": 3.1910508000291884,
+  "block": 3
+ },
+ "round_commit": [
+  {
+   "round": 1,
+   "clients": 0,
+   "gas": 139097,
+   "ok": true,
+   "latency_s": 1.8931256999494508,
+   "block": 5
+  },
+  {
+   "round": 2,
+   "clients": 1,
+   "gas": 123440,
+   "ok": true,
+   "latency_s": 2.0176372999558225,
+   "block": 6
+  },
+  {
+   "round": 3,
+   "clients": 5,
+   "gas": 129178,
+   "ok": true,
+   "latency_s": 2.0183534000534564,
+   "block": 7
+  },
+  {
+   "round": 4,
+   "clients": 10,
+   "gas": 136323,
+   "ok": true,
+   "latency_s": 2.001791499904357,
+   "block": 8
+  },
+  {
+   "round": 5,
+   "clients": 20,
+   "gas": 150652,
+   "ok": true,
+   "latency_s": 1.965697200037539,
+   "block": 9
+  },
+  {
+   "round": 6,
+   "clients": 50,
+   "gas": 193577,
+   "ok": true,
+   "latency_s": 2.043037600000389,
+   "block": 10
+  }
+ ],
+ "decision_batch": [
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9878370000515133,
+   "block": 11
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9825145000359043,
+   "block": 12
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.023509999969974,
+   "block": 13
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 1.9800576999550685,
+   "block": 14
+  },
+  {
+   "gas": 30122,
+   "ok": true,
+   "latency_s": 2.0058299000374973,
+   "block": 15
+  }
+ ],
+ "trusted_before": true,
+ "revoke": {
+  "gas": 32710,
+  "ok": true,
+  "latency_s": 1.980296100024134,
+  "block": 16
+ },
+ "trusted_after": false,
+ "trusted_other_round": true,
+ "guard_round_order": {
+  "gas": 25751,
+  "ok": false,
+  "latency_s": 1.9607339000795037,
+  "block": 17
+ },
+ "guard_unknown_model": {
+  "gas": 27511,
+  "ok": false,
+  "latency_s": 1.965621400042437,
+  "block": 18
+ },
+ "guard_not_gateway": {
+  "gas": 25301,
+  "ok": false,
+  "latency_s": 2.017574300058186,
+  "block": 19
+ },
+ "block_gas_limit": 30000000
+}

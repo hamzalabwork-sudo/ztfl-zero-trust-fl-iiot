@@ -42,6 +42,14 @@ py -3.13 stage4/run_e10.py --dataset edgeiiot --n-dev 10 --m 2 --rho 1.0 --run e
 sh stage4/evm_sweep.sh            # run from stage4/
 python stage4/summarize_chain.py  # -> stage4/results/chain_summary.json
 
+# 3c. live PureChain (E12): the same nine sessions on the public free-gas network
+#     (chain ID 900520900520). Put two private keys of your own in ~/.ztfl/purechain_keys.json as
+#     {"coordinator": "0x...", "gateway": "0x..."}; no funds are needed (zero gas price). The keys reach the
+#     gateway container only through the LEDGER_KEYS environment variable, never the compose file.
+sh stage4/purechain_sweep.sh                 # run from stage4/; skips sessions already stored
+python stage4/summarize_chain.py purechain   # -> stage4/results/chain_summary_purechain.json
+#     behind an HTTPS-inspecting proxy, point REQUESTS_CA_BUNDLE at a bundle that includes its root
+
 # 4. summarise
 python src/summarize_e10.py        # -> stage4/results/summary.md
 ```
